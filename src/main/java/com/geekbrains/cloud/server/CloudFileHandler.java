@@ -2,17 +2,25 @@ package com.geekbrains.cloud.server;
 
 import java.io.*;
 import java.net.Socket;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+>>>>>>> origin/master
 
 public class CloudFileHandler implements Runnable {
 
 
     private static final int BUFFER_SIZE = 8192;
     private final Socket socket;
+<<<<<<< HEAD
     private final DataInputStream is;
     private final DataOutputStream os;
+=======
+    private DataInputStream is;
+    private DataOutputStream os;
+>>>>>>> origin/master
     private byte[] buf;
     private File serverDirectory;
 
@@ -23,6 +31,7 @@ public class CloudFileHandler implements Runnable {
         os = new DataOutputStream(socket.getOutputStream());
         buf = new byte[BUFFER_SIZE];
         serverDirectory = new File ("server");
+<<<<<<< HEAD
         sendServerFiles();
         sendCurrentDirName();
     }
@@ -54,6 +63,10 @@ public class CloudFileHandler implements Runnable {
 
     }
 
+=======
+
+    }
+>>>>>>> origin/master
     @Override
     public void run() {
         try {
@@ -69,6 +82,7 @@ public class CloudFileHandler implements Runnable {
                             fos.write(buf, 0, readCount);
                         }
                     }
+<<<<<<< HEAD
                     System.out.println("File: " + name + " was uploaded");
                     sendServerFiles();
                 }else if ("#get_file#".equals(command)) {
@@ -86,6 +100,10 @@ public class CloudFileHandler implements Runnable {
                     os.flush();
                 }
                 else{
+=======
+                    System.out.println("File: " + name + " is uploaded");
+                }else{
+>>>>>>> origin/master
                     System.err.println("Unknown command: " + command);
                 }
             }
