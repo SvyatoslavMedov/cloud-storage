@@ -14,7 +14,31 @@ public class BufferExamples {
 
         while(buf.hasRemaining()) {
             byte b = buf.get();
-            System.out.println((char)b);
+            System.out.print((char)b);
+        }
+        System.out.println();
+
+        buf.flip();
+
+        while(buf.hasRemaining()) {
+            byte b = buf.get();
+            System.out.print((char)b);
+        }
+        System.out.println();
+
+
+        buf.rewind();
+        buf.get();
+        buf.get();
+        buf.get();
+        buf.mark();
+        buf.get();
+        buf.get();
+        buf.reset();
+
+        while(buf.hasRemaining()) {
+            byte b = buf.get();
+            System.out.print((char )b);
         }
         System.out.println();
     }
