@@ -19,6 +19,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static java.lang.System.out;
+import static java.lang.System.setOut;
 
 public class EchoServerNio {
 
@@ -26,6 +27,8 @@ public class EchoServerNio {
     private Selector selector;
     private ByteBuffer buf;
     private Path currentDir;
+    private String filename;
+    private String pathName;
 
     public EchoServerNio() throws Exception {
 
@@ -84,48 +87,50 @@ public class EchoServerNio {
         if("ls".equals(msg)){
             channel.write(ByteBuffer.wrap(getFiles(currentDir).getBytes(StandardCharsets.UTF_8)));
         }
-        if("mkdir".equals(msg)){
-            File dir2 = new File("server/testfolder/");
-            boolean created = dir2.mkdir();
-            if(created){
-                out.println("Folder has been created");
-            }
+        if("mkdir".equals(msg)) {
+            int i ;
+            String fileName = null;
+            String pathName = null;
+            for (i = 0; i < 100; i++) {
 
-//            File newDir2 = new File("testfoldernew");
-//            boolean deleted = newDir2.delete();
-//            if(deleted){
-//                System.out.println("Folder has been deleted");
-//            }
+
+                fileName = i  + ".txt";
+
+                pathName = "server/" + fileName;
+                File dir2 = new File(pathName);
+                boolean created = dir2.mkdir();
+                if (created) {
+                    out.println("Folder has been created");
+                    break;
+                    }
+                }
+
         }
+
         if("touch file".equals(msg)) {
             try {
-                String msg2 = reader.toString().trim();
-                byte[] name = msg2.getBytes(StandardCharsets.UTF_8);
-                out.write(name.length);
-                out.write(name);
-
-                File file = new File("testfolder/1.txt");
-
-                long fileSize = file.length();
-                ByteBuffer buf = ByteBuffer.allocate(Long.BYTES);
-                buf.putLong(fileSize);
-                out.write(buf.array());
-
-                try (FileInputStream in = new FileInputStream(file)) {
-                    // Читаем файл блоками по килобайту
-                    byte[] data = new byte[1024];
-                    int read;
-                    while ((read = in.read(data)) != -1) {
-                        // И отправляем в сокет
-                        out.write(data);
-                    }
-                } catch (IOException exc) {
-                    exc.printStackTrace();
+                File f = new File(pathName);
+                if (f.createNewFile()) {
+                    System.out.println("File created");
+                } else {
+                    System.out.println("File already exists");
                 }
-            }catch (IOException exc){
-                exc.printStackTrace();
+            }catch(Exception e){
+                    System.err.println(e);
             }
         }
+        if("cat file".equals(msg)) {
+            try (BufferedReader in = new BufferedReader(new FileReader("server/testfolder/1.txt"))) {
+                String line;
+                while ((line = in.readLine()) != null) {
+                    System.out.println(line);
+                }
+            }
+        }
+
+
+
+
 
         printPrelude(channel);
 //        System.out.println("Received: " + msg);
